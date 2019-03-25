@@ -14,11 +14,14 @@ import (
 
 clock := timejumper.New()
 t := clock.Now()
-
 fmt.Printf("current: %v\n", t)
-fmt.Println("Dive into the future!")
 
+fmt.Println("Dive into the future!")
 clock.Jump(t.AddDate(1, 0, 0))
+fmt.Printf("future: %v\n", clock.Now())
+
+fmt.Println("Sleep, but not really")
+clock.Sleep(10 * time.Hour)
 fmt.Printf("future: %v\n", clock.Now())
 
 fmt.Println("Back to the present")

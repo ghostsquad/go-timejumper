@@ -103,4 +103,14 @@ func TestJumperClock_Now(t *testing.T) {
 		assert.GreaterOrEqual(t, diffNs, expectedDiffMin.Nanoseconds())
 		assert.LessOrEqual(t, diffNs, expectedDiffMax.Nanoseconds())
 	})
+
+	t.Run("sleeping behavior", func(t *testing.T) {
+		c := New()
+		realNow := time.Now()
+		c.Freeze(realNow)
+		c.Sleep(sleepTime)
+		cNow := c.Now()
+
+		assert.Equal(t, realNow.Add(sleepTime), cNow)
+	})
 }

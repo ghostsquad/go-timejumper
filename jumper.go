@@ -12,20 +12,26 @@ import (
 type Clock interface {
 	Now() time.Time
 	Since(time.Time) time.Duration
+	Sleep(time.Duration)
 }
 
 // RealClock implements the standard lib
 // only functions relevant for this codebase
 type RealClock struct{}
 
-// Now just calls time.Now
+// Now is a proxy to time.Now
 func (RealClock) Now() time.Time {
 	return time.Now()
 }
 
-// Since just calls to time.Since
+// Since is a proxy to time.Since
 func (RealClock) Since(t time.Time) time.Duration {
 	return time.Since(t)
+}
+
+// Sleep is a proxy to time.Sleep
+func (RealClock) Sleep(d time.Duration) {
+	time.Sleep(d)
 }
 
 // compile-time assertion that RealClock matches Clock interface
@@ -67,6 +73,13 @@ func (c *JumperClock) Now() time.Time {
 // Since returns the time elapsed since t. It is shorthand for .Now().Sub(t).
 func (c *JumperClock) Since(t time.Time) time.Duration {
 	return c.Now().Sub(t)
+}
+
+// Sleep is similar to jump, except that it takes a duration
+func (c *JumperClock) Sleep(d time.Duration) {
+	now := c.Now()
+	c.initialTime = now.Add(d)
+	c.initialTimeSetAt = time.Now()
 }
 
 // compile-time assertion that RealClock matches Clock interface
