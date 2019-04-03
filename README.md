@@ -1,5 +1,7 @@
 # TimeJumper
 
+[![Documentation](https://godoc.org/github.com/ghostsquad/go-timejumper?status.svg)](http://godoc.org/github.com/ghostsquad/go-timejumper) [![Go Report Card](https://goreportcard.com/badge/github.com/ghostsquad/go-timejumper)](https://goreportcard.com/report/github.com/ghostsquad/go-timejumper)
+
 Time as a dependency, very useful for testing. Unlike other similar libraries that use package globals, this gives you `clock` interface and object that you can pass into your objects as a dependency.
 
 ## Quick Start
