@@ -1,4 +1,6 @@
-package wrappers
+// +build !race
+
+package timejumper
 
 import (
 	"testing"
@@ -7,23 +9,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func BenchmarkTime_Now(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		time.Now()
-	}
-}
-
-func BenchmarkJumperClock_Now(b *testing.B) {
-	c := New()
-
-	for i := 0; i < b.N; i++ {
-		c.Now()
-	}
-}
-
 func TestJumperClock_Now(t *testing.T) {
 	t.Parallel()
-	sleepTime := 50 * time.Millisecond
+	sleepTime := 10 * time.Millisecond
 	fudgeTime := 10 * time.Millisecond
 
 	for i := 0; i <= 100; i++ {

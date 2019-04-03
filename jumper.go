@@ -1,9 +1,10 @@
-package wrappers
+package timejumper
 
 // https://stackoverflow.com/questions/18970265/is-there-an-easy-way-to-stub-out-time-now-globally-in-golang-during-test
 
 import (
 	"errors"
+	"sync"
 	"time"
 )
 
@@ -51,6 +52,7 @@ type JumperClock struct {
 	initialTimeSetAt time.Time
 	scale            int
 	activate         TimeMachine
+	mutex            sync.Mutex
 }
 
 // New returns a new instance of a TimeCopClock
@@ -67,17 +69,26 @@ func New() *JumperClock {
 
 // Now activates the TimeMachine
 func (c *JumperClock) Now() time.Time {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
 	return c.activate()
 }
 
 // Since returns the time elapsed since t. It is shorthand for .Now().Sub(t).
 func (c *JumperClock) Since(t time.Time) time.Duration {
-	return c.Now().Sub(t)
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
+	return c.activate().Sub(t)
 }
 
 // Sleep is similar to jump, except that it takes a duration
 func (c *JumperClock) Sleep(d time.Duration) {
-	now := c.Now()
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
+	now := c.activate()
 	c.initialTime = now.Add(d)
 	c.initialTimeSetAt = time.Now()
 }
@@ -85,7 +96,7 @@ func (c *JumperClock) Sleep(d time.Duration) {
 // compile-time assertion that RealClock matches Clock interface
 var _ Clock = &JumperClock{}
 
-// NewDefaultTimeMachine is what's used to enable scaling
+// NewDefaultTimeMachine is what's used to enable scaling and freezing
 func (c *JumperClock) NewDefaultTimeMachine() TimeMachine {
 	return func() time.Time {
 		if c.isFrozen {
@@ -101,6 +112,9 @@ func (c *JumperClock) NewDefaultTimeMachine() TimeMachine {
 // You can still move time by freezing again with a new time
 // or by using Travel
 func (c *JumperClock) Freeze(t time.Time) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
 	c.isFrozen = true
 	c.initialTime = t
 	c.initialTimeSetAt = time.Now()
@@ -109,6 +123,9 @@ func (c *JumperClock) Freeze(t time.Time) {
 // Jump sets the clock to the desired time
 // Compatible with Freeze (will remain frozen if previously frozen)
 func (c *JumperClock) Jump(t time.Time) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
 	c.initialTime = t
 	c.initialTimeSetAt = time.Now()
 }
@@ -129,19 +146,22 @@ func (c *JumperClock) Scale(s int) error {
 	return nil
 }
 
-// SetTimeMachine sets TimeMachine, a function that controls how time works!
-// It also resets the clock according to Back()
-func (c *JumperClock) SetTimeMachine(t TimeMachine) {
-	c.Back()
-	c.activate = t
-}
-
 // Back returns you to the present (future? since you started)
 // Does not change the TimeMachine
 func (c *JumperClock) Back() {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
 	now := time.Now()
 
 	c.isFrozen = false
 	c.initialTime = now
 	c.initialTimeSetAt = now
+}
+
+// SetTimeMachine sets TimeMachine, a function that controls how time works!
+// It also resets the clock according to Back()
+func (c *JumperClock) SetTimeMachine(t TimeMachine) {
+	c.Back()
+	c.activate = t
 }
