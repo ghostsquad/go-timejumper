@@ -47,3 +47,13 @@ make test
 make test-bench
 make test-race
 ```
+
+### CI Testing
+
+```bash
+make test-ci
+make test-ci-bench
+make test-ci-race
+```
+
+Output files are contained in [reports/](reports/)
