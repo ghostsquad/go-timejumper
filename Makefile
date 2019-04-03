@@ -7,14 +7,26 @@ help: ## Show Makefile help
 
 .DEFAULT_GOAL := help
 
+install:
+	go get gotest.tools/gotestsum
+
 build:
 	go build
 
 test:
-	go test ./...
+	gotestsum --format short-verbose
 
 test-race:
-	go test -race ./...
+	gotestsum --format short-verbose -- -race
 
 test-bench:
-	go test -bench=.
+	gotestsum --format short-verbose -- -bench=. -run=^$$
+
+test-ci:
+	gotestsum --junitfile reports/unit-tests.xml -- -bench=. -run=^$$
+
+test-ci-bench:
+	go test -run=^$$ -bench=. ./... | tee reports/bench.txt
+
+test-ci-race:
+	gotestsum --junitfile reports/race-tests.xml -- -race

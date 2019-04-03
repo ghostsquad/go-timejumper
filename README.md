@@ -42,6 +42,8 @@ fmt.Printf("frozen current: %v\n", clock.Now())
 ### Testing
 
 ```bash
-go test -bench=.
-go test .
+make install
+make test
+make test-bench
+make test-race
 ```

@@ -13,6 +13,14 @@ func BenchmarkTime_Now(b *testing.B) {
 	}
 }
 
+func BenchmarkRealClock_Now(b *testing.B) {
+	c := RealClock{}
+
+	for i := 0; i < b.N; i++ {
+		c.Now()
+	}
+}
+
 func BenchmarkJumperClock_Now(b *testing.B) {
 	c := New()
 
