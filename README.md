@@ -57,3 +57,35 @@ make test-ci-race
 ```
 
 Output files are contained in [reports/](reports/)
+
+## Contribution
+
+We ❤️ PR's
+
+Contribution, in any kind of way, is highly welcome!
+It doesn't matter if you are not able to write code.
+Creating issues or holding talks and help other people to use [go-timejumper](https://github.com/ghostsquad/go-timejumper) is contribution, too!
+A few examples:
+
+* Correct typos in the README / documentation
+* Reporting bugs
+* Implement a new feature or endpoint
+* Sharing the love of [go-timejumper](https://github.com/ghostsquad/go-timejumper) and help people to get use to it
+
+If you are new to pull requests, checkout [Collaborating on projects using issues and pull requests / Creating a pull request](https://help.github.com/articles/creating-a-pull-request/) as well as our [pull request template](PULL_REQUEST_TEMPLATE.md)
+
+## Releasing
+
+Install `standard-version`
+```bash
+npm i -g standard-version
+```
+
+```bash
+standard-version
+git push --tags
+```
+
+Manually copy/paste text from changelog (for this new version) into the release on Github.com. E.g.
+
+[https://github.com/ghostsquad/go-timejumper/releases/edit/v0.1.1](https://github.com/ghostsquad/go-timejumper/releases/edit/v0.1.1)
