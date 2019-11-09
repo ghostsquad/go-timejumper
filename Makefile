@@ -9,6 +9,7 @@ help: ## Show Makefile help
 
 install:
 	go get gotest.tools/gotestsum
+	go get github.com/stretchr/testify/assert
 
 build:
 	go build
