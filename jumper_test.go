@@ -12,7 +12,6 @@ import (
 func TestJumperClock_Now(t *testing.T) {
 	t.Parallel()
 	sleepTime := 10 * time.Millisecond
-	fudgeTime := 20 * time.Millisecond
 
 	t.Run("frozen behavior", func(t *testing.T) {
 		c := New()
@@ -25,51 +24,30 @@ func TestJumperClock_Now(t *testing.T) {
 		assert.Equal(t, realNow, cNow)
 	})
 
-	t.Run("frozen jumping behavior", func(t *testing.T) {
-		c := New()
-
-		realNow := time.Now()
-		c.Freeze(realNow)
-
-		future := realNow.AddDate(1, 0, 0)
-		c.Jump(future)
-
-		assert.Equal(t, future, c.Now())
-	})
-
 	t.Run("scaling behavior", func(t *testing.T) {
 		c := New()
-
+		
+		present = time.Now()
+		c.Freeze(present)
 		scale := 2
 		c.Scale(scale)
+		c.Sleep(sleepTime)
+		future := c.Now()
 
-		realNow := time.Now()
-		time.Sleep(sleepTime)
-		cNow := c.Now()
+		expectedDiff := sleepTime * time.Duration(scale)
 
-		diffNs := cNow.Sub(realNow).Nanoseconds()
-		expectedDiffMin := sleepTime * time.Duration(scale)
-		expectedDiffMax := expectedDiffMin + fudgeTime
-
-		assert.GreaterOrEqual(t, diffNs, expectedDiffMin.Nanoseconds())
-		assert.LessOrEqual(t, diffNs, expectedDiffMax.Nanoseconds())
+		assert.Equal(t, future - present, expectedDiff)	
 	})
 
 	t.Run("jumping behavior", func(t *testing.T) {
 		c := New()
-		realNow := time.Now()
+		
+		present := time.Now()
+		c.Freeze(present)
 		future := realNow.AddDate(1, 0, 0)
-
 		c.Jump(future)
-		time.Sleep(sleepTime)
-		cNow := c.Now()
 
-		diffNs := cNow.Sub(realNow).Nanoseconds()
-		expectedDiffMin := future.Sub(realNow) + sleepTime
-		expectedDiffMax := expectedDiffMin + fudgeTime
-
-		assert.GreaterOrEqual(t, diffNs, expectedDiffMin.Nanoseconds())
-		assert.LessOrEqual(t, diffNs, expectedDiffMax.Nanoseconds())
+		assert.Equal(t, c.Now(), future)
 	})
 
 	t.Run("sleeping behavior", func(t *testing.T) {
@@ -77,8 +55,7 @@ func TestJumperClock_Now(t *testing.T) {
 		realNow := time.Now()
 		c.Freeze(realNow)
 		c.Sleep(sleepTime)
-		cNow := c.Now()
 
-		assert.Equal(t, realNow.Add(sleepTime), cNow)
+		assert.Equal(t, realNow.Add(sleepTime), c.Now())
 	})
 }
