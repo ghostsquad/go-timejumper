@@ -27,7 +27,7 @@ func TestJumperClock_Now(t *testing.T) {
 	t.Run("scaling behavior", func(t *testing.T) {
 		c := New()
 		
-		present = time.Now()
+		present := time.Now()
 		c.Freeze(present)
 		scale := 2
 		c.Scale(scale)
