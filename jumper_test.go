@@ -36,7 +36,7 @@ func TestJumperClock_Now(t *testing.T) {
 
 		expectedDiff := sleepTime * time.Duration(scale)
 
-		assert.Equal(t, future.Sub(present), expectedDiff)	
+		assert.Equal(t, expectedDiff, future.Sub(present))	
 	})
 
 	t.Run("jumping behavior", func(t *testing.T) {
@@ -47,7 +47,7 @@ func TestJumperClock_Now(t *testing.T) {
 		future := present.AddDate(1, 0, 0)
 		c.Jump(future)
 
-		assert.Equal(t, c.Now(), future)
+		assert.Equal(t, future, c.Now())
 	})
 
 	t.Run("sleeping behavior", func(t *testing.T) {
