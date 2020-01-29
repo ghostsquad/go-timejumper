@@ -12,7 +12,7 @@ import (
 func TestJumperClock_Now(t *testing.T) {
 	t.Parallel()
 	sleepTime := 10 * time.Millisecond
-	fudgeTime := 10 * time.Millisecond
+	fudgeTime := 20 * time.Millisecond
 
 	t.Run("frozen behavior", func(t *testing.T) {
 		c := New()
