@@ -60,7 +60,7 @@ Output files are contained in [reports/](reports/)
 
 ## Contribution
 
-We ❤️ PR's
+Thank you for your PR's! ❤️
 
 Contribution, in any kind of way, is highly welcome!
 It doesn't matter if you are not able to write code.
@@ -76,7 +76,7 @@ If you are new to pull requests, checkout [Collaborating on projects using issue
 
 ## Releasing
 
-Install `standard-version`
+Install [standard-version](https://github.com/conventional-changelog/standard-version)
 ```bash
 npm i -g standard-version
 ```
