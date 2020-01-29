@@ -16,12 +16,12 @@ func TestJumperClock_Now(t *testing.T) {
 	t.Run("frozen behavior", func(t *testing.T) {
 		c := New()
 
-		realNow := time.Now()
-		c.Freeze(realNow)
+		present := time.Now()
+		c.Freeze(present)
 		time.Sleep(sleepTime)
-		cNow := c.Now()
+		future := c.Now()
 
-		assert.Equal(t, realNow, cNow)
+		assert.Equal(t, present, future)
 	})
 
 	t.Run("scaling behavior", func(t *testing.T) {
@@ -44,7 +44,7 @@ func TestJumperClock_Now(t *testing.T) {
 		
 		present := time.Now()
 		c.Freeze(present)
-		future := realNow.AddDate(1, 0, 0)
+		future := present.AddDate(1, 0, 0)
 		c.Jump(future)
 
 		assert.Equal(t, c.Now(), future)
@@ -52,10 +52,10 @@ func TestJumperClock_Now(t *testing.T) {
 
 	t.Run("sleeping behavior", func(t *testing.T) {
 		c := New()
-		realNow := time.Now()
-		c.Freeze(realNow)
+		present := time.Now()
+		c.Freeze(present)
 		c.Sleep(sleepTime)
 
-		assert.Equal(t, realNow.Add(sleepTime), c.Now())
+		assert.Equal(t, present.Add(sleepTime), c.Now())
 	})
 }
