@@ -14,26 +14,6 @@ func TestJumperClock_Now(t *testing.T) {
 	sleepTime := 10 * time.Millisecond
 	fudgeTime := 10 * time.Millisecond
 
-	for i := 0; i <= 100; i++ {
-		t.Run("default behavior", func(t *testing.T) {
-			c := New()
-
-			realNow := time.Now()
-			time.Sleep(sleepTime)
-			cNow := c.Now()
-
-			diffNs := cNow.Sub(realNow).Nanoseconds()
-
-			//fmt.Printf("diff: %+v\n", diff)
-
-			// To avoid race conditions here, I'm allowing a small difference in actual timing
-			// This might require more research
-			// The benchmarks above prove that .Now() is actually very fast
-			assert.GreaterOrEqual(t, diffNs, sleepTime.Nanoseconds())
-			assert.LessOrEqual(t, diffNs, (sleepTime + fudgeTime).Nanoseconds())
-		})
-	}
-
 	t.Run("frozen behavior", func(t *testing.T) {
 		c := New()
 
