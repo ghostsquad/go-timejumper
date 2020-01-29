@@ -89,7 +89,9 @@ func (c *JumperClock) Sleep(d time.Duration) {
 	defer c.mutex.Unlock()
 
 	now := c.activate()
-	c.initialTime = now.Add(d)
+
+	// Sleep for the scaled duration
+	c.initialTime = now.Add(d * time.Duration(c.scale))
 	c.initialTimeSetAt = time.Now()
 }
 
